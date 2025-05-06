@@ -1,6 +1,6 @@
 use chrono::{DateTime, Utc};
 use lazy_static::lazy_static;
-use rusqlite::{Connection, Result, params};
+use rusqlite::{params, Connection, Error, Result};
 use std::sync::Mutex;
 
 #[derive(Debug)]
@@ -22,7 +22,7 @@ pub fn init() {
         "CREATE TABLE beats (
             id    INTEGER PRIMARY KEY,
             title TEXT NOT NULL,
-            url TEXT NOT NULL,
+            url  TEXT NOT NULL UNIQUE,
             datetime TEXT NOT NULL
         )",
         (),
@@ -31,12 +31,17 @@ pub fn init() {
 
 pub fn add_beat(title: &str, url: &str) -> Result<i64, rusqlite::Error> {
     let conn = CLIENT.lock().unwrap();
-    conn.execute(
+    match conn.execute(
         "INSERT INTO beats (title, url, datetime) VALUES (?1, ?2, ?3)",
         params![title, url, chrono::Utc::now().to_rfc3339()],
-    )?;
-
-    Ok(conn.last_insert_rowid())
+    ) {
+        Ok(_) => {
+            Ok(conn.last_insert_rowid())
+        },
+        Err(e) => {
+            Err(e)
+        }
+    }
 }
 
 pub fn get_beats() -> Result<Vec<Beat>, rusqlite::Error> {

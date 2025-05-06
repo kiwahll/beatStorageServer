@@ -8,3 +8,4 @@ rocket = "0.5.1"
 rusqlite = { version = "0.35.0", features = ["bundled"] }
 chrono = { version = "0.4", features = ["serde"] }
 lazy_static = "1.4"
+rocket_cors = "0.6.0"

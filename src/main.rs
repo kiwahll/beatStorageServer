@@ -1,14 +1,15 @@
 use db::Beat;
-use rocket::{http::Status, Response};
-use rocket_cors::{CorsOptions};
+use rocket::http::Status;
+use rocket_cors::CorsOptions;
+use rocket::serde::json::Json;
 
 #[macro_use] extern crate rocket;
 pub mod db;
 
 #[get("/")]
-fn index() -> String {
+fn index() -> Json<Vec<Beat>> {
     let beats: Vec<Beat> = db::get_beats().unwrap();
-    format!("{:?}", beats)
+    Json(beats)
 }
 
 #[get("/add/<title>/<url>")]

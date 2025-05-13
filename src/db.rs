@@ -1,9 +1,10 @@
 use chrono::{DateTime, Utc};
 use lazy_static::lazy_static;
-use rusqlite::{params, Connection, Error, Result};
+use rusqlite::{params, Connection, Result};
 use std::sync::Mutex;
+use serde::Serialize;
 
-#[derive(Debug)]
+#[derive(Serialize)]
 pub struct Beat {
     id: i64,
     title: String,
